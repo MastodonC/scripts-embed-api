@@ -13,28 +13,33 @@ PROJECT_ID = "63e590b0-4747-4e18-929b-8856a5f79a84"
 example_url = "http://www.getembed.com/4/entities/?q=project_id%3A63e590b0-4747-4e18-929b-8856a5f79a84%20AND%20property_code%3ASP001&page=0&size=10&sort_key=programme_name.lower_case_sort&sort_order=asc"
 
 def write_report(user, pwd):
-    with open('sc_final_report.csv', 'w') as f:
+    with open('../sc_final_report.csv', 'w') as f:
         
         report_writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        report_writer.writerow(['property code', 'property ID', 'device ID', 'sensor ID'])
+        report_writer.writerow(['property code', 'property ID', 'device description', 'device ID', 'sensor ID'])
         
         auth = HTTPBasicAuth(user, pwd)
-        for i in range(len(CODES[:5])):
-            url1 = URL + 'entities/?q=project_id3A' + PROJECT_ID + '%20AND%20property_code%3A' + CODES[i] + '&page=0'
+        for i in range(len(CODES)):
+            print "Looking up info for property %s ..." % CODES[i]
+            url1 = URL + 'entities/?q=project_id3A' + PROJECT_ID + '%20AND%20property_code%3A' + CODES[i]
             r1 = requests.get(url=url1, auth=auth)
             time.sleep(2)
             if r1.status_code == 200:
-                results1 = r1.json()['entities'][0]
-                LIST_CODES[i].append(results1['entity_id'] or '')
-                devices = results1['devices']
-                for device in devices:
-                    for sensor in device['description']:
-                        desc = sensor['sensor_id'] or ''
-                        sen_id = sensor['sensor_id'] or ''
-                        dev_id = sensor['device_id'] or ''
-                        LIST_CODES[i].append(dev_id)
-                        LIST_CODES[i].append(sen_id)
+                entities = r1.json()['entities']
+                if len(entities) > 1:
+                    print "WHAT!?! There are %d properties named %s" %(len(entities), CODES[i])
+                else:
+                    results1 = r1.json()['entities'][0]
+                    LIST_CODES[i].append(results1['entity_id'] or '')
+                    devices = results1['devices']
+                    for device in devices:
+                        for sensor in device['readings']:
+                            if device['description'] == CODES[i]:
+                                LIST_CODES[i].append(device['description'])
+                                LIST_CODES[i].append(sensor['sensor_id'])
+                                LIST_CODES[i].append(sensor['device_id'])
             report_writer.writerow(LIST_CODES[i])
+        print "report written"
 
 
 
