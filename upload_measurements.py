@@ -2,6 +2,8 @@
 import sys, requests, time, json
 from requests.auth import HTTPBasicAuth
 
+## Info on this script refer to a testing instance on getembed.com
+
 ## Embed url
 URL = "https://www.getembed.com/4/"
 
@@ -17,7 +19,7 @@ measurements = {"measurements": [
     {
         "value": "0.87",
         "timestamp": "2014-05-11T10:30:00Z",
-        "type": "water mete",
+        "type": "water meter",
     }
 ]}
 
