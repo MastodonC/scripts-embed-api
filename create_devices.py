@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os, sys
 import csv, time, json, requests
 from requests.auth import HTTPBasicAuth
