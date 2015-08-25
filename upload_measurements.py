@@ -1,15 +1,18 @@
 #!/usr/bin/python
-import sys, requests, time, json
+import sys
+import requests
+import time
+import json
 from requests.auth import HTTPBasicAuth
 
-## Info on this script refer to a testing instance on getembed.com
-
-## Embed url
+# Embed url
 URL = "https://www.getembed.com/4/"
 
-## Add entity and device ids for properties you want to upload measurements to:
-## Example:
-## [{"entity1": ["device1.1", "device1.2"]}, {"entity2": ["device2.1", "device2.2"]}]
+# Add entity and device ids for properties you want to upload
+# measurements to:
+# Example:
+# [{"entity1": ["device1.1", "device1.2"]},
+#  {"entity2": ["device2.1", "device2.2"]}]
 entities = [
     {"xxxxxxxxxxxxxx-xx-xxx-xxxxxx": ["aaaaabbbbbbbbaabbbbbbbbaa"]},
     {"yyyyyyyyyy-yyyy-yyyyyy-yyyyy": ["ccccccccccdddcddcdccdddcc"]}
@@ -24,7 +27,8 @@ measurements = {"measurements": [
     }
 ]}
 
-## To run if you want to check device info
+
+# To run if you want to check device info
 def check_device(entity_id, device_id, user, pwd):
     "Check device exists and device info."
     auth = HTTPBasicAuth(user, pwd)
@@ -34,25 +38,29 @@ def check_device(entity_id, device_id, user, pwd):
     print r.json()
 
 
-## To run to upload measurements device per device
-# NOTE: Update measurements content and make sure "type" matches current sensor type
+# To run to upload measurements device per device
+# NOTE: Update measurements content and make sure "type"
+# matches current sensor type
 def post_measurements(entity_id, device_id, user, pwd):
     "Post measurements for a device."
     auth = HTTPBasicAuth(user, pwd)
-    url = URL + "entities/" + entity_id + "/devices/" + device_id + "/measurements/"
+    url = URL + "entities/" + entity_id + "/devices/" + device_id +\
+        "/measurements/"
     data = json.dumps(measurements)
     try:
         r = requests.post(url=url, data=data, auth=auth)
         time.sleep(2)
         print r.status_code, r.reason
         if r.status_code == 202:
-            print "Measurements uploaded for device ", device_id, " in property ", entity_id
-    except ConnectionError as e:
+            print "Measurements uploaded for device ", device_id,\
+                " in property ", entity_id
+    except requests.exceptions.ConnectionError as e:
         print "Connection error. ", e
-    except ConnectTimeout as e:
+    except requests.exceptions.ConnectTimeout as e:
         print "Connection timed out. ", e
 
-## To run to upload measurements to several devices
+
+# To run to upload measurements to several devices
 def upload_all_measurements(user, pwd):
     "Add measurements for multiple devices."
     for entity in entities:
@@ -61,7 +69,8 @@ def upload_all_measurements(user, pwd):
 
 
 if __name__ == "__main__":
-    post_measurements("yyyyyyyyyyyyyy", "gggggggggggggggg", sys.argv[1], sys.argv[2])
+    post_measurements("yyyyyyyyyyyyyy", "gggggggggggggggg",
+                      sys.argv[1], sys.argv[2])
 
-    # check_device("xxxxxxxxxxxxxxxx", "dddddddddddddd", sys.argv[1], sys.argv[2])
-                
+    # check_device("xxxxxxxxxxxxxxxx", "dddddddddddddd",
+    # sys.argv[1], sys.argv[2])
