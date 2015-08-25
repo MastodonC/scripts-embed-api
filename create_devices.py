@@ -3,8 +3,10 @@ import os, sys
 import csv, time, json, requests
 from requests.auth import HTTPBasicAuth
 
-HEADERS = []
-PROJECT_ID = "63e590b0-4747-4e18-929b-8856a5f79a84"
+## Note: leave empty if reading property codes from a csv file
+CODES = [] ## properties codes will be appended to this list after
+           ## running the function get_entities_names
+PROJECT_ID = "xxxxx-xxxxx-xxxx-xxx-xx" ## Replace with your project id
 URL = "https://www.getembed.com/4/"
 
 
@@ -14,10 +16,12 @@ def get_entities_names(csv_file):
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         h = next(reader)
         i = h[1].split(',')[1:]
-        HEADERS.extend(i)
+        CODES.extend(i)
 
+## Note: this function will hit a limit.
+## It won't retrieve more than 50 entities/project
 def existing_entities(project_id, user, pwd):
-    "Check whether entity already exists"
+    "Check whether entities already exists"
     # Get all entities for a project
     AUTH = HTTPBasicAuth(user, pwd)
     url = URL + 'projects/%s/entities' % project_id
@@ -39,7 +43,7 @@ def existing_entities(project_id, user, pwd):
 
 def existing_devices(entity_id, name, user, pwd):
     "Check whether a device already exists"
-    # Get all entities for a project
+    # Get all devices for a property
     AUTH = HTTPBasicAuth(user, pwd)
     url = URL + 'entities/%s/devices/' % entity_id
     r = requests.get(url=url, auth=AUTH)
@@ -59,9 +63,9 @@ def existing_devices(entity_id, name, user, pwd):
     else:
         "HTTP error ", r.status_code
 
-def create_entities_devices(project_id, headers, user, pw):
-    "Do all the things! \^-^/"
-    # Check if entities on prod are on the list
+def create_entities_devices(csv_file, project_id, codes, user, pw):
+    "Create new entities, devices and write a report"
+    # Check if entities in Embed are on the list
     print "Looking for pre-existing entities..."
     entities = existing_entities(project_id, user, pw)
     print "pre existing entities: ", entities
@@ -69,7 +73,7 @@ def create_entities_devices(project_id, headers, user, pw):
     # Lists to append new data and used to write the report:
     row_codes, row_ent, row_dev, row_sen = ["Code names"], ["Entity ids"], ["Device ids"], ["Sensors ids"]
     AUTH = HTTPBasicAuth(user, pw)
-    for name in headers:
+    for name in codes:
         if name in entities.keys():
             # Check if there's already a device
             if existing_devices(entities[name], name, user, pw):
@@ -139,7 +143,7 @@ def create_entities_devices(project_id, headers, user, pw):
                     print "Achtung! No device created for " + name + "!"
             
 
-    with open('scottish_water_meters.csv', 'w') as f:
+    with open(csv_file, 'w') as f:
         embed_writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         embed_writer.writerow(row_codes)
         embed_writer.writerow(row_ent)
@@ -147,12 +151,12 @@ def create_entities_devices(project_id, headers, user, pw):
         embed_writer.writerow(row_sen)
 
 
-## NOT USED ATM
-## Some properties already have devices.
-def write_report(project_id, user, pwd):
+## Note: this function will hit a limit.
+## It won't retrieve more than 50 entities/project
+def write_report(text_file, project_id, user, pwd):
     "Get properties ids, devices ids, sensors ids"
-    # I'm expecting ONE device and ONE sensor per property
-    with open('scottish_water_meters.txt', 'w') as f:
+    # Expecting ONE device and ONE sensor per property here
+    with open(text_file, 'w') as f:
         AUTH = HTTPBasicAuth(user, pwd)
         url = URL + 'projects/%s/entities/' % project_id
         r = requests.get(url=url, auth=AUTH)
@@ -181,13 +185,13 @@ def write_report(project_id, user, pwd):
 if __name__ == "__main__":
     ## Get the properties/devices names from the csv:
     get_entities_names(sys.argv[1])
-    print HEADERS
+    print CODES
 
     ## Try the existing_devices function:
-    #print existing_devices("c5a07ae6-ed19-4107-b4e7-8a7ad515435d", u'SP005', sys.argv[1], sys.argv[2])
+    #print existing_devices("c5a07ae6-ed19-4107-b4e7-8a7ad515435d", u'A005', sys.argv[1], sys.argv[2])
 
     ## Upload properties/devices and write the report in //:
-    #create_entities_devices(PROJECT_ID, HEADERS, sys.argv[2], sys.argv[3])
+    #create_entities_devices(PROJECT_ID, CODES, sys.argv[2], sys.argv[3])
 
     ## Write report after upload
     #write_report(PROJECT_ID, sys.argv[1], sys.argv[2])
