@@ -13,6 +13,31 @@ PROJECT_ID = "xxxxx-xxxxx-xxxx-xxx-xx"  # Replace with your project id
 URL = "https://www.getembed.com/4/"
 
 
+def create_device(entity_id, user, pwd):
+    "Creates a device from an entity id"
+    auth = HTTPBasicAuth(user, pwd)
+    url = URL + "entities/" + entity_id + "/devices/"
+    readings = {"readings":
+            [{"unit": "C",
+              "period": "PULSE",
+              "type": "Temperature",
+              "alias": "WeatherSensor"}],
+                "description": "Weather station test",
+                "entity_id": entity_id}
+    data = json.dumps(readings)
+    try:
+        r = requests.post(url=url, data=data, auth=auth)
+        time.sleep(2)
+        print r.status_code, r.reason
+        if r.status_code == 201:
+            print "Device created for property ", entity_id
+    except requests.exceptions.ConnectionError as e:
+        print "Connection error. ", e
+    except requests.exceptions.ConnectTimeout as e:
+        print "Connection timed out. ", e
+    pass
+
+
 def get_entities_names(csv_file):
     "Get the entities names from a csv header"
     with open(csv_file, 'r') as csvfile:
@@ -204,9 +229,12 @@ def write_report(text_file, project_id, user, pwd):
 
 
 if __name__ == "__main__":
+    # Create a single device
+    create_device("22d2b293-d00a-4d9b-9d97-3a94c0df3f7a", sys.argv[1], sys.argv[2])
+    
     # Get the properties/devices names from the csv:
-    get_entities_names(sys.argv[1])
-    print CODES
+    # get_entities_names(sys.argv[1])
+    # print CODES
 
     # Try the existing_devices function:
     # print existing_devices("c5a07ae6-ed19-4107-b4e7-8a7ad515435d",

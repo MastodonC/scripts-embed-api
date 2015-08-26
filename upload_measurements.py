@@ -21,9 +21,19 @@ entities = [
 # Update measurements and make sure "type" matches current sensor type
 measurements = {"measurements": [
     {
-        "value": "0.87",
+        "value": "20",
         "timestamp": "2014-05-11T10:30:00Z",
-        "type": "water meter",
+        "type": "Temperature",
+    },
+    {
+        "value": "19",
+        "timestamp": "2014-05-12T10:30:00Z",
+        "type": "Temperature",
+    },
+    {
+        "value": "20",
+        "timestamp": "2014-05-13T10:30:00Z",
+        "type": "Temperature",
     }
 ]}
 
@@ -69,8 +79,10 @@ def upload_all_measurements(user, pwd):
 
 
 if __name__ == "__main__":
-    post_measurements("yyyyyyyyyyyyyy", "gggggggggggggggg",
-                      sys.argv[1], sys.argv[2])
+    # post_measurements("22d2b293-d00a-4d9b-9d97-3a94c0df3f7a",
+    #                   "99a9a811-045f-4180-aa0e-e7393c558046",
+    #                   sys.argv[1], sys.argv[2])
 
-    # check_device("xxxxxxxxxxxxxxxx", "dddddddddddddd",
-    # sys.argv[1], sys.argv[2])
+    check_device("22d2b293-d00a-4d9b-9d97-3a94c0df3f7a",\
+                 "99a9a811-045f-4180-aa0e-e7393c558046",
+                 sys.argv[1], sys.argv[2])
