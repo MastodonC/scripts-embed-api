@@ -1,4 +1,8 @@
-###Python scripts as example of using Embed API
+##Python scripts as example of using Embed API
+
+
+###API Docs
+
 
 * [Embed API doc](https://github.com/MastodonC/kixi.hecuba/blob/552e2fcfcb7aba46376ff743619334b410b26f5a/doc/api.md): useful for basic search, but note the limit of 50 results.
 
@@ -6,10 +10,18 @@
 * [Embed functionalities](https://github.com/MastodonC/kixi.hecuba/blob/master/doc/help/embed.md): useful for advanced search
 
 
-####Content:
+###Content
 
 
-**check_upload.py**
+* [check_upload.py](#check_uploadpy)
+* [create_devices.py](#create_devicespy)
+* [delete_entities.py](#delete_entitiespy)
+* [get_project_profiles_info.py](#get_project_profiles_infopy)
+* [upload_measurements.py](#upload_measurementspy)
+* [write_csv_report.py](#write_csv_reportpy)
+
+
+####check_upload.py
 
     find_entities_by_code(filename, user, pwd)
         Retrieves info for properties given their property codes.
@@ -23,7 +35,7 @@
         a property code.
 
 
-**create_devices.py**
+####create_devices.py
 
     create_device(entity_id, user, pwd)
         Creates a device from an entity id
@@ -44,7 +56,7 @@
         Get properties ids, devices ids, sensors ids
 
 
-**delete_entities.py**
+####delete_entities.py
 
     delete_properties(list_properties, user, pwd)
     
@@ -52,7 +64,7 @@
         List ids of properties to be deleted.
 
 
-**get_project_profiles_info.py**
+####get_project_profiles_info.py
 
     get_profiles(user, pwd, filename)
         Get properties profiles and write into csv file.
@@ -63,7 +75,7 @@
     list_all_projects(user, pwd)
         Lists all projects in a programme
 
-**upload_measurements.py**
+####upload_measurements.py
 
     check_device(entity_id, device_id, user, pwd)
         Check device exists and device info.
@@ -75,7 +87,7 @@
         Add measurements for multiple devices.
 
 
-**write_csv_report.py**
+####write_csv_report.py
 
     check_device(entity_id, device_id, user, pwd)
         Check device exists and device info.
