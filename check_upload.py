@@ -5,12 +5,7 @@ import csv
 import requests
 from requests.auth import HTTPBasicAuth
 
-# List of property codes that were uploaded to a project
-# Replace with a list of property codes
-CODES = ['A001', 'A002', 'A003', 'A004', 'A005']
 URL = "https://www.getembed.com/4/"
-# Replace with your project id
-PROJECT_ID = "xxxxx-xxxxx-xxxx-xxx-xx"
 
 
 # Note: this function will hit a limit.
@@ -68,19 +63,19 @@ def get_entity_info(entity_id, user, pwd):
 
 # Note: this uses custom url and will not reach a limit
 # in the search results
-def find_entities_by_code(filename, user, pwd):
+def find_entities_by_code(project_id, property_codes, outfile, user, pwd):
     """Retrieves info for properties given their property codes.
     Writes this info into a csv file."""
     AUTH = HTTPBasicAuth(user, pwd)
-    with open(filename, 'a') as f:
+    with open(outfile, 'a') as f:
         writer = csv.writer(f, delimiter=',', quotechar='|',
                             quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["Entity code", "Entity id", "Property data",
+        writer.writerow(["Entity code", "Entity id", # "Property data",
                          "Device code", "Device id", "Sensor id",
                          "Device2 code", "Device2 id", "Sensor2 id",
                          "Profile id", "Profile data"])
-        for code in CODES:
-            url = URL + "entities/?q=project_id%3A" + PROJECT_ID +\
+        for code in property_codes:
+            url = URL + "entities/?q=project_id%3A" + project_id +\
                 "%20AND%20property_code%3A" + code +\
                 """&page=0&size=10&sort_key=programme_name.
                 lower_case_sort&sort_order=asc"""
@@ -90,21 +85,17 @@ def find_entities_by_code(filename, user, pwd):
                 print "Error ", r.status_code
             else:
                 for ent in r.json()["entities"]:
-                    # print ent
                     row = []
                     # Get property info:
-                    print "Property ", ent["property_code"], " - ",\
-                        ent["entity_id"]
+                    print "Property ", ent["entity_id"]
                     row.extend([ent["property_code"], ent["entity_id"]])
                     # Get property data:
-                    print "Property data ", ent["property_data"]
-                    row.append(ent["property_data"])
+                    # row.append(ent["property_data"])
                     if len(ent["devices"]) == 0:
                         row.extend(["", "", ""])
                     if len(ent["devices"]) > 0:
                         for dev in ent["devices"]:
-                            print "Device: ", dev["description"], " - ",\
-                                dev["device_id"]
+                            print "Device: ", dev["device_id"]
                             row.extend([dev["description"], dev["device_id"]])
                             for sen in dev["readings"]:
                                 print "Sensor: ", sen["sensor_id"]
@@ -126,10 +117,14 @@ def find_entities_by_code(filename, user, pwd):
 
 
 if __name__ == "__main__":
-    get_project_info(PROJECT_ID, "A009", sys.argv[1], sys.argv[2])
+
+    cds = ['3144', '3148', '3171']
+    #get_project_info("xxxxxx", "A009", sys.argv[1], sys.argv[2])
 
     # get_entity_info("4f4261dd-af09-408b-b443-1a22f3e9a7e3",
     # sys.argv[1], sys.argv[2])
 
-    # find_entities_by_code("data/report_properties.csv",
-    # sys.argv[1], sys.argv[2])
+    find_entities_by_code("c06c9bf8-d67c-4ab9-aa0f-75bbaf58b033", 
+	cds, 
+	"/home/eleonore/Documents/WORK_PROJECTS/hecuba/tapestry/report_stns.csv",
+    	sys.argv[1], sys.argv[2])
