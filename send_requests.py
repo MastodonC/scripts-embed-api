@@ -7,11 +7,11 @@ import urlparse
 import requests
 from requests.auth import HTTPBasicAuth
 
-HOST_LIST = {"www.getembed.com", "localhost"}
+HOSTNAMES = {"www.getembed.com", "localhost"}
 
 
 def validate_hostname(url):
-    if urlparse.urlparse(url=url).hostname not in HOST_LIST:
+    if urlparse.urlparse(url=url).hostname not in HOSTNAMES:
         raise requests.exceptions.InvalidURL(url)
 
 
@@ -23,6 +23,7 @@ def work_locally(url):
 
 
 def get_request(user, password, url):
+    ## Two verifications to be changed to decorators.
     work_locally(url)
     validate_hostname(url)
 
