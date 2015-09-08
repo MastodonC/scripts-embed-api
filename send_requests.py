@@ -1,7 +1,5 @@
 #!/usr/bin/python
 import sys
-# import csv
-# import time
 # import json
 import urlparse
 import requests
@@ -17,9 +15,9 @@ def validate_hostname(url):
 
 def work_locally(url):
     if urlparse.urlparse(url=url).hostname == "localhost":
-        print "Ok, you're working on your local Embed instance."
+        print ">> Ok, you're working on your local Embed instance."
     elif urlparse.urlparse(url=url).hostname == "www.getembed.com":
-        print "Careful, you're sending requests to Embed production server."
+        print ">> Careful, you're sending requests to Embed production server."
 
 
 def get_request(user, password, url):
@@ -31,10 +29,10 @@ def get_request(user, password, url):
     try:
         r = requests.get(url=url, auth=auth)
         if r.status_code == requests.codes.ok:
-            print "The request was accepted! =)"
+            print ">> The http request was accepted! =)"
             return r.json()
         else:
-            print "Something went wrong! :-/"
+            print ">> Something went wrong! :-/"
             r.raise_for_status()
     except requests.exceptions.ConnectionError as e:
         print ">> Connection error: ", e.message
