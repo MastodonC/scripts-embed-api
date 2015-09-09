@@ -3,6 +3,7 @@ import sys
 import requests
 import time
 import json
+import send_requests as sr
 from requests.auth import HTTPBasicAuth
 
 # Embed url
@@ -27,11 +28,13 @@ measurements = {"measurements": [
     }
 ]}
 
+
 def get_json_data(filename):
     "Retrieve measurements from a json file."
     with open(filename, 'r') as f:
         data = json.load(f)
         return data
+
 
 # To run if you want to check device info
 def check_device_info(entity_id, device_id, user, pwd):
@@ -46,7 +49,7 @@ def check_device_info(entity_id, device_id, user, pwd):
 # To run to upload measurements device per device
 # NOTE: Update measurements content and make sure "type"
 # matches current sensor type
-def post_measurements(entity_id, device_id, user, pwd):
+def post_measurements(entity_id, device_id, measurements, user, pwd):
     "Post measurements for a device."
     auth = HTTPBasicAuth(user, pwd)
     url = URL + "entities/" + entity_id + "/devices/" + device_id +\
@@ -65,7 +68,7 @@ def post_measurements(entity_id, device_id, user, pwd):
         print "Connection timed out. ", e
 
 
-# To run to upload measurements to several devices
+# To run to upload measurements for several devices
 def upload_all_measurements(user, pwd):
     "Add measurements for multiple devices."
     for entity in entities:
@@ -73,11 +76,36 @@ def upload_all_measurements(user, pwd):
             post_measurements(entity, device, user, pwd)
 
 
-if __name__ == "__main__":
-    post_measurements("d0a91ad4-dd99-4ad1-8b6f-ad97c54a6aae",
-                      "b4149ec6-7264-4f5c-b62a-09d3baff7808",
-                      sys.argv[1], sys.argv[2])
+def check_measurements_upload(entity_id, device_id, sensor_type,
+                              start_date, end_date, user, pwd):
+    """Check measurements were uploaded to a specific device.
+    Expect the sensor type and start/end dates as strings like '2015-09-09'."""
+    url = URL + "entities/" + entity_id + "/devices/" + device_id +
+    "/measurements/" + sensor_type + "?startDate=" + start_date +
+    "%2000:00:00&endDate=" + end_date + "%2000:00:00"
+    print sr.get_request(user, pwd, url)
 
-    # check_device_info("d0a91ad4-dd99-4ad1-8b6f-ad97c54a6aae",
-    #              "b4149ec6-7264-4f5c-b62a-09d3baff7808",
+
+if __name__ == "__main__":
+    # post_measurements("d0a91ad4-dd99-4ad1-8b6f-ad97c54a6aae",
+    #                   "b4149ec6-7264-4f5c-b62a-09d3baff7808",
+    #                   sys.argv[1], sys.argv[2])
+
+    # check_device_info("4bc58f62-1861-484c-bfda-f24fff8bc03c",
+    #              "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
     #              sys.argv[1], sys.argv[2])
+
+    # Example to upload json measurements:
+
+    # data = get_json_data("/home/eleonore/Documents/WORK_PROJECTS/
+    # hecuba/tapestry/input/temp-data.json")
+    # post_measurements("4bc58f62-1861-484c-bfda-f24fff8bc03c",
+    #                   "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
+    #                   data, sys.argv[1], sys.argv[2])
+
+    # Example to check measurements upload:
+
+    check_measurements_upload("4bc58f62-1861-484c-bfda-f24fff8bc03c",
+                              "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
+                              "Temperature", "2012-05-01", "2012-05-02",
+                              sys.argv[1], sys.argv[2])
