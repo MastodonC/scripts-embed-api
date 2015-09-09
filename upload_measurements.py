@@ -27,6 +27,11 @@ measurements = {"measurements": [
     }
 ]}
 
+def get_json_data(filename):
+    "Retrieve measurements from a json file."
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        return data
 
 # To run if you want to check device info
 def check_device_info(entity_id, device_id, user, pwd):

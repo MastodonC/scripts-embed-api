@@ -25,10 +25,10 @@ def list_all_projects(user, pwd, programme_id):
     return project_ids
 
 
-def list_all_entities(user, pwd):
+def list_all_entities(user, pwd, projects):
     entity_ids = []
     auth = HTTPBasicAuth(user, pwd)
-    for proj_id in PROJECTS:
+    for proj_id in projects:
         url = URL + "projects/" + proj_id + "/entities"
         r = requests.get(url=url, auth=auth)
         time.sleep(2)
@@ -39,14 +39,24 @@ def list_all_entities(user, pwd):
     return entity_ids
 
 
-def get_profiles(user, pwd, filename):
+def read_json_data(filename):
+    """Get duplicate profiles projects and
+    properties ids stored in a json file."""
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        return data
+
+
+def get_profiles(user, pwd, projects, entities, filename):
     auth1 = HTTPBasicAuth(user, pwd)
-    
+
     with open(filename, 'w') as f:
-        csv_writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csv_writer.writerow(['Property ID', 'Profile ID', 'Event type', 'Timestamp'])
-        
-        for entity in ENTITIES:
+        csv_writer = csv.writer(f, delimiter=',', quotechar='|',
+                                quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(['Property ID', 'Profile ID',
+                             'Event type', 'Timestamp'])
+
+        for entity in entities:
             print "ENTITY: ", entity
             url1 = URL + "entities/" + entity + "/profiles"
             r = requests.get(url=url1, auth=auth1)
@@ -58,17 +68,11 @@ def get_profiles(user, pwd, filename):
                 if len(list_profiles) > 2:
                     for profile in list_profiles:
                         profile_id = profile['profile_id']
-                        profile_name = profile['profile_data'].get('event_type', '')
+                        profile_name = profile['profile_data'].get(
+                            'event_type', '')
                         profile_date = profile['timestamp']
-                        csv_writer.writerow([entity, profile_id, profile_name, profile_date])
-                
-
-def read_json_data(filename):
-    """Get duplicate profiles projects and 
-    properties ids stored in a json file."""
-    with open(filename, 'r') as f:
-        data = json.load(f)
-        return data
+                        csv_writer.writerow([entity, profile_id,
+                                             profile_name, profile_date])
 
 
 if __name__ == "__main__":
@@ -76,11 +80,10 @@ if __name__ == "__main__":
 
     # print list_all_projects(sys.argv[1], sys.argv[2], sys.argv[3])
 
-    # print list_all_entities(sys.argv[1], sys.argv[2])
-
-    # get_profiles(sys.argv[1], sys.argv[2], "duplicate_profiles.csv")
+    # print list_all_entities(sys.argv[1], sys.argv[2], projects)
 
     data = read_json_data("../embed_bpe_duplicates.json")
-    print data['projects']
-    
-
+    projects = data['projects']
+    entities = data['entities']
+    get_profiles(sys.argv[1], sys.argv[2], projects, entities,
+                 "../duplicate_profiles.csv")
