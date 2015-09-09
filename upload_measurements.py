@@ -80,8 +80,8 @@ def check_measurements_upload(entity_id, device_id, sensor_type,
                               start_date, end_date, user, pwd):
     """Check measurements were uploaded to a specific device.
     Expect the sensor type and start/end dates as strings like '2015-09-09'."""
-    url = URL + "entities/" + entity_id + "/devices/" + device_id +
-    "/measurements/" + sensor_type + "?startDate=" + start_date +
+    url = URL + "entities/" + entity_id + "/devices/" + device_id +\
+    "/measurements/" + sensor_type + "?startDate=" + start_date +\
     "%2000:00:00&endDate=" + end_date + "%2000:00:00"
     print sr.get_request(user, pwd, url)
 

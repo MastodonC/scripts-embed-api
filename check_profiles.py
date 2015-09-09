@@ -11,6 +11,8 @@ URL = "https://www.getembed.com/4/"
 
 
 def list_all_projects(user, pwd, programme_id):
+    """Return a list of all project ids in a
+    programme."""
     project_ids = []
     auth = HTTPBasicAuth(user, pwd)
     url = URL + "programmes/" + programme_id + "/projects"
@@ -26,6 +28,8 @@ def list_all_projects(user, pwd, programme_id):
 
 
 def list_all_entities(user, pwd, projects):
+    """Returns a list of all the entity ids
+    for a list of project ids."""
     entity_ids = []
     auth = HTTPBasicAuth(user, pwd)
     for proj_id in projects:
@@ -48,6 +52,8 @@ def read_json_data(filename):
 
 
 def get_profiles(user, pwd, entities, filename):
+    """Returns a csv file containing profile info
+    for a list of entity ids provided."""
     auth = HTTPBasicAuth(user, pwd)
 
     with open(filename, 'w') as f:

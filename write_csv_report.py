@@ -18,7 +18,9 @@ PROJECT_ID = "xxxxx-xxxxx-xxxx-xxx-xx"
 
 
 def write_report(filename, user, pwd):
-
+    """Retrieve info about properties in a project
+    and with specific property codes.
+    Write the results to a csv file."""
     with open(filename, 'w') as f:
 
         report_writer = csv.writer(f, delimiter=',', quotechar='|',

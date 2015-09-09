@@ -9,11 +9,16 @@ HOSTNAMES = {"www.getembed.com", "localhost"}
 
 
 def validate_hostname(url):
+    """Check the hostname is part of authorised 
+    hostnames defined in HOSTNAMES"""
     if urlparse.urlparse(url=url).hostname not in HOSTNAMES:
         raise requests.exceptions.InvalidURL(url)
 
 
 def work_locally(url):
+    """Print a warning message to tell you whether
+    you're working on a local Embed instance or
+    on the production server."""
     if urlparse.urlparse(url=url).hostname == "localhost":
         print ">> Ok, you're working on your local Embed instance."
     elif urlparse.urlparse(url=url).hostname == "www.getembed.com":
@@ -21,6 +26,8 @@ def work_locally(url):
 
 
 def get_request(user, password, url):
+    """Generate a generic http get request,
+    handle errors and return the json data."""
     ## Two verifications to be changed to decorators.
     work_locally(url)
     validate_hostname(url)
