@@ -47,8 +47,8 @@ def read_json_data(filename):
         return data
 
 
-def get_profiles(user, pwd, projects, entities, filename):
-    auth1 = HTTPBasicAuth(user, pwd)
+def get_profiles(user, pwd, entities, filename):
+    auth = HTTPBasicAuth(user, pwd)
 
     with open(filename, 'w') as f:
         csv_writer = csv.writer(f, delimiter=',', quotechar='|',
@@ -58,10 +58,11 @@ def get_profiles(user, pwd, projects, entities, filename):
 
         for entity in entities:
             print "ENTITY: ", entity
-            url1 = URL + "entities/" + entity + "/profiles"
-            r = requests.get(url=url1, auth=auth1)
+            url = URL + "entities/" + entity + "/profiles/"
+            print url
+            r = requests.get(url=url, auth=auth)
             time.sleep(2)
-            print r.status_code
+            print r.status_code, r.reason
             if r.status_code == 200:
                 list_profiles = r.json()
                 print "There are %d profiles." % len(list_profiles)
@@ -76,14 +77,17 @@ def get_profiles(user, pwd, projects, entities, filename):
 
 
 if __name__ == "__main__":
-    # get_profiles(sys.argv[1], sys.argv[2])
+    get_profiles(sys.argv[1], sys.argv[2],
+                 ["d52942fd-bda2-4ecc-98b6-5b6a948f907a",
+                  "28e0563d-5515-4534-a5cc-db973ea66179"],
+                 "profiles_test.csv")
 
     # print list_all_projects(sys.argv[1], sys.argv[2], sys.argv[3])
 
     # print list_all_entities(sys.argv[1], sys.argv[2], projects)
 
-    data = read_json_data("../embed_bpe_duplicates.json")
-    projects = data['projects']
-    entities = data['entities']
-    get_profiles(sys.argv[1], sys.argv[2], projects, entities,
-                 "../duplicate_profiles.csv")
+    # data = read_json_data("../embed_bpe_duplicates.json")
+    # projects = data['projects']
+    # entities = data['entities']
+    # get_profiles(sys.argv[1], sys.argv[2], projects, entities,
+    #              "../duplicate_profiles.csv")
