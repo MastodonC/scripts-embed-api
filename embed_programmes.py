@@ -1,10 +1,11 @@
 #!/usr/bin/python
 import sys
-# import csv
+import csv
 # import json
 import requests
 import send_requests as sr
 from requests.auth import HTTPBasicAuth
+from datetime import datetime
 
 # URL = "https://www.getembed.com/4/"
 URL = "http://localhost:8010/4/"
@@ -35,6 +36,13 @@ def results_to_stdout(data, *args):
 
 def results_to_csv(data, *args):
     "Write the results to a csv file"
+    format = "%Y%m%d_%H%M%S"
+    date = datetime.now().strftime(format)
+    filename = "~/report_" + date
+    print filename
+    with open(filename, 'w') as f:
+        report_writer = csv.writer(f, delimiter=',', quotechar='|',
+                                   quoting=csv.QUOTE_MINIMAL)
     print ">> CSV file written!"
     
 
@@ -69,7 +77,8 @@ def get_programme_by_id(user, password, programme_id):
 
 
 if __name__ == "__main__":
-    get_all_programmes(sys.argv[1], sys.argv[2], 'both')
+    get_all_programmes(sys.argv[1], sys.argv[2], 'csv')
+    # get_all_programmes(sys.argv[1], sys.argv[2], 'both')
     # get_all_programmes(sys.argv[1], sys.argv[2], 'stdout',
     #                    'description', 'name', 'projects')
     # get_programme_by_id(sys.argv[1], sys.argv[2],
