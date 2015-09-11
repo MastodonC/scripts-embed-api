@@ -1,14 +1,13 @@
 #!/usr/bin/python
 import sys
 import csv
-# import json
 import requests
 import send_requests as sr
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
 # BASE_URL = "https://www.getembed.com/4/"
-BASE_URL = "http://localhost:8010/4/"
+BASE_URL = "http://localhost:8010/4/programmes/"
 
 # Info available for a programme:
 PROGRAMME_INFO = ['name', 'programme_id',
@@ -22,7 +21,6 @@ DEFAULT_INFO = ['name', 'programme_id']
 
 def results_to_stdout(data, *args):
     "Print the results to your terminal"
-    print data
     args = args[0]
     for d in data:
         if not args or set(args) < set(DEFAULT_INFO):
@@ -56,7 +54,7 @@ def get_all_programmes(user, password, action, *args):
     set in DEFAULT_INFO.
     - Otherwise it returns DEFAULT_INFO and the other 
     parameters specified.'''
-    url = BASE_URL + "programmes/"
+    url = BASE_URL
     data = sr.get_request(user, password, url)
     if action == 'stdout':
         results_to_stdout(data, args)
@@ -71,7 +69,7 @@ def get_all_programmes(user, password, action, *args):
 
 
 def get_programme_by_id(user, password, programme_id, action, *args):
-    url = BASE_BASE_URL + "programmes/" + programme_id
+    url = BASE_URL + programme_id
     print url
     data = sr.get_request(user, password, url)
     print data

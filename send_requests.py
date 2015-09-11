@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import sys
-# import json
 import urlparse
 import requests
 from requests.auth import HTTPBasicAuth
@@ -28,7 +27,7 @@ def work_locally(url):
 def get_request(user, password, url):
     """Generate a generic http get request,
     handle errors and return the json data."""
-    ## Two verifications to be changed to decorators.
+    # Two verifications to be changed to decorators.
     work_locally(url)
     validate_hostname(url)
 
