@@ -87,25 +87,31 @@ def check_measurements_upload(entity_id, device_id, sensor_type,
 
 
 if __name__ == "__main__":
-    # post_measurements("d0a91ad4-dd99-4ad1-8b6f-ad97c54a6aae",
-    #                   "b4149ec6-7264-4f5c-b62a-09d3baff7808",
+    # post_measurements("xxx-xxx-xxx-xxx",
+    #                   "aaa-aaaa-aa-aaa",
     #                   sys.argv[1], sys.argv[2])
 
-    # check_device_info("4bc58f62-1861-484c-bfda-f24fff8bc03c",
-    #              "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
-    #              sys.argv[1], sys.argv[2])
+    # check_device_info("xxx-xxx-xxx-xxx",
+    #                   "aaa-aaaa-aa-aaa",
+    #                   sys.argv[1], sys.argv[2])
 
     # Example to upload json measurements:
 
     # data = get_json_data("/home/eleonore/Documents/WORK_PROJECTS/
     # hecuba/tapestry/input/temp-data.json")
-    # post_measurements("4bc58f62-1861-484c-bfda-f24fff8bc03c",
-    #                   "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
+    # post_measurements("xxx-xxx-xxx-xxx",
+    #                   "aaa-aaaa-aa-aaa",
     #                   data, sys.argv[1], sys.argv[2])
 
     # Example to check measurements upload:
 
-    check_measurements_upload("4bc58f62-1861-484c-bfda-f24fff8bc03c",
-                              "c09416f0-82b0-4f3d-b76b-a47ba84372a3",
-                              "Temperature", "2012-05-01", "2012-05-02",
+    check_measurements_upload("xxx-xxx-xxx-xxx",
+                              "aaa-aaaa-aa-aaa",
+                              "CO2", "2012-12-19", "2012-12-20",
                               sys.argv[1], sys.argv[2])
+    # Output:
+    # {u'measurements':
+    #  [{u'timestamp': u'2012-12-19T00:00:00+0000', u'sensor_id': u'bbb-bb-bbbb-bbb', u'value': 360},
+    #   {u'timestamp': u'2012-12-19T00:10:00+0000', u'sensor_id': u'bbb-bb-bbbb-bbb', u'value': 360},
+    #   {u'timestamp': u'2012-12-19T00:20:00+0000', u'sensor_id': u'bbb-bb-bbbb-bbb', u'value': 340},
+    #   {u'timestamp': u'2012-12-19T00:30:00+0000', u'sensor_id': u'bbb-bb-bbbb-bbb', u'value': 340}]}
